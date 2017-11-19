@@ -1,0 +1,14 @@
+CMPUT 291 Mini Project 2  - justinjo, klark, skhanna1
+
+Phase 1 -
+    Upon running the script, user is prompted to enter the xml file name.
+    Assuming the xml file is in the correct format, the program runs through the
+    input file, line by line. For each line, regex operations are used to extract
+    the correct terms and write new lines in their respective output file.
+
+
+
+Phase 2 -
+
+Phase 3 -
+
