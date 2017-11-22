@@ -18,7 +18,6 @@ def main():
     CreateYearsIndex()
 
 
-
 def CreateRecsIndex():
     # Code to create Hash index for recs.txt
 
