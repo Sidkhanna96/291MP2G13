@@ -32,7 +32,7 @@ def CreateRecsIndex(sorted_filename):
 		print(command)
 		os.system(command)
 
-		commandForIdx = "awk -F: '{print $1; print $0}' < " + noBackSlashFile + " | db_load -T -c duplicates=1 -t hash re.idx"
+		commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t hash re.idx"
 		print(commandForIdx)
 		os.system(commandForIdx)
 	except:
@@ -49,7 +49,7 @@ def CreateTermsIndex(sorted_filename):
 		print(command)
 		os.system(command)
 
-		commandForIdx = "awk -F: '{print $1; print $0}' < " + noBackSlashFile + " | db_load -T -c duplicates=1 -t btree te.idx"
+		commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t btree te.idx"
 		print(commandForIdx)
 		os.system(commandForIdx)
 	except:
@@ -64,7 +64,7 @@ def CreateYearsIndex(sorted_filename):
 		print(command)
 		os.system(command)
 
-		commandForIdx = "awk -F: '{print $1; print $0}' < " + noBackSlashFile + " | db_load -T -c duplicates=1 -t btree ye.idx"
+		commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t btree ye.idx"
 		print(commandForIdx)
 		os.system(commandForIdx)
 	except:
