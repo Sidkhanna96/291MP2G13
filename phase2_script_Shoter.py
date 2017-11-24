@@ -34,9 +34,9 @@ def CreateIndex(sorted_filename):
 		IndexFilename = sorted_filename[2:3] + "e.idx"
 		print(IndexFilename)
 		if sorted_filename[2:3] == 'r':
-			commandForIdx = "awk -F: '{print $1; print $0}' < " + noBackSlashFile + " | db_load -T -c duplicates=1 -t hash " + IndexFilename
+			commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t hash " + IndexFilename
 		else:
-			commandForIdx = "awk -F: '{print $1; print $0}' < " + noBackSlashFile + " | db_load -T -c duplicates=1 -t btree " + IndexFilename
+			commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t btree " + IndexFilename
 		print(commandForIdx)
 		os.system(commandForIdx)
 	except:
