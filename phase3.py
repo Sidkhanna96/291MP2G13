@@ -1,5 +1,5 @@
 from bsddb3 import db
-
+import re
 
 def main():
     query = input("Enter your query: ")
@@ -27,11 +27,13 @@ def ProcessQuery(query):
     term_type = ""
     value = ""
     
+    # query_vals = re.split(r'[^0-9a-zA-Z_]',query)
     for char in query:
-        if(char == ':'):
-            term_type = query.split(char)[0]
-            value = query.split(char)[1]
-    
+        if(char == ":"):
+            term_type = query.split(":")[0]
+            value = query.split(":")[1]
+
+
     if(term_type == 'title'):
        TitleSearch(value, curs1)
     
@@ -44,7 +46,15 @@ def ProcessQuery(query):
     elif(term_type=='year'): 
        YearSearch(value,curs2)
 
+
+
 def YearSearch(value, curs2):
+    result = curs2.set(value.encode("utf-8"))
+    print(result[1].decode("utf-8"))
+    dup = curs2.next_dup()
+    while(dup != None):
+        print(dup[1].decode("utf-8"))
+        dup = curs2.next_dup()
 
 def OtherSearch(value, curs1):
     t_value = "o-"+value
@@ -54,6 +64,7 @@ def OtherSearch(value, curs1):
     while(dup != None):
         print(dup[1].decode("utf-8"))
         dup = curs1.next_dup()
+
 def AuthorSearch(value, curs1):
     t_value = "a-"+value
     result = curs1.set(t_value.encode("utf-8"))
@@ -62,6 +73,7 @@ def AuthorSearch(value, curs1):
     while(dup != None):
         print(dup[1].decode("utf-8"))
         dup = curs1.next_dup()
+
 def TitleSearch(value, curs1):
     t_value = "t-"+value
     result = curs1.set(t_value.encode("utf-8"))
