@@ -28,24 +28,46 @@ def ProcessQuery(query):
     value = ""
     
     # query_vals = re.split(r'[^0-9a-zA-Z_]',query)
-    for char in query:
-        if(char == ":"):
-            term_type = query.split(":")[0]
-            value = query.split(":")[1]
+    key_value_list=[]
+    split_char_list=[":","<",">"]
+    char_bool=False
+    split_query=query.split()
+    for aquery in split_query:
+        for char in aquery:
+            if(char in split_char_list):
+                small_list=[]
+                term_type = aquery.split(char)[0]
+                small_list.append(term_type)
+                value = aquery.split(char)[1]
+                small_list.append(value)
+                key_value_list.append(small_list)
+                char_bool=True
+                break
+        if(char_bool==False):
+            small_list=[]
+            term_type="tao"
+            small_list.append(term_type)
+            value=aquery
+            small_list.append(value)
+            split_char_list.append(small_list)
+        char_bool=False
 
-
-    if(term_type == 'title'):
-       TitleSearch(value, curs1)
+                    
+    for query_pair in key_value_list:    
+        if(query_pair[0] == 'title'):
+            TitleSearch(query_pair[1], curs1)
+        
+        elif(query_pair[0]=='author'):
+            AuthorSearch(query_pair[1], curs1)
     
-    elif(term_type=='author'):
-        AuthorSearch(value, curs1)
-
-    elif(term_type=='other'):
-       OtherSearch(value,curs1)
-
-    elif(term_type=='year'): 
-       YearSearch(value,curs2)
-
+        elif(query_pair[0]=='other'):
+            OtherSearch(query_pair[1],curs1)
+    
+        elif(query_pair[0]=='year'): 
+            YearSearch(query_pair[1],curs2)
+        
+        elif(query_pair[0]=='tao'):
+            BlanketSearch(query_pair[1],curs1) #what curs_ do I use?
 
 
 def YearSearch(value, curs2):
@@ -82,6 +104,15 @@ def TitleSearch(value, curs1):
     while(dup != None):
         print(dup[1].decode("utf-8"))
         dup = curs1.next_dup()
+        
+def BlanketSearch(value, curs1):#? currently copy pasted need to change t_value, etc.
+    t_value = "t-"+value
+    result = curs1.set(t_value.encode("utf-8"))
+    print(result[1].decode("utf-8"))
+    dup = curs1.next_dup()
+    while(dup != None):
+        print(dup[1].decode("utf-8"))
+        dup = curs1.next_dup()        
 
     
 if __name__ == '__main__':
