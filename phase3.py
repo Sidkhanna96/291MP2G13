@@ -43,6 +43,7 @@ def ProcessQuery(query):
                 small_list.append(term_type)
                 value = aquery.split(char)[1]
                 small_list.append(value.lower())
+                small_list.append(char)
                 key_value_list.append(small_list)
                 char_bool=True
                 break
@@ -53,27 +54,35 @@ def ProcessQuery(query):
             small_list.append(term_type)
             value=aquery
             small_list.append(value.lower())
+            small_list.append(char)
             key_value_list.append(small_list)
         char_bool=False
-    #print(key_value_list)
+    print(key_value_list)
            
-    for query_pair in key_value_list:    
+    for query_pair in key_value_list:
+
         key_words=query_pair[1].split()
         for word in key_words:
-            if(query_pair[0] == 'title'):
-                key_result_list.append(TitleSearch(word, curs1))
+            if(len(word) > 2):
+                if(query_pair[0] == 'title'):
+                    key_result_list.append(TitleSearch(word, curs1))
+                
+                elif(query_pair[0]=='author'):
+                    key_result_list.append(AuthorSearch(word, curs1))
             
-            elif(query_pair[0]=='author'):
-                key_result_list.append(AuthorSearch(word, curs1))
-        
-            elif(query_pair[0]=='other'):
-                key_result_list.append(OtherSearch(word,curs1))
-        
-            elif(query_pair[0]=='year'): 
-                key_result_list.append(YearSearch(word,curs2))
+                elif(query_pair[0]=='other'):
+                    key_result_list.append(OtherSearch(word,curs1))
             
-            elif(query_pair[0]=='tao'):
-                key_result_list.append(BlanketSearch(word,curs1))
+                elif(query_pair[0]=='year'): 
+                    if(query_pair[2]=="<"):
+                        pass
+                    elif(query_pair[2]==">"):
+                        pass
+                    else:
+                        key_result_list.append(YearSearch(word,curs2))
+                
+                elif(query_pair[0]=='tao'):
+                    key_result_list.append(BlanketSearch(word,curs1))
 
 # Get intersect of results
     key_set = set.intersection(*map(set,key_result_list))
@@ -152,7 +161,27 @@ def TitleSearch(value, curs1):
     return key_list
             
 
-def RangeYearSearch(lower,upper):
+def GreaterRangeYearSearch(limit):
+    database2 = db.DB()
+    database2.set_flags(db.DB_DUP)
+    DB_File2 = "ye.idx"
+    database2.open(DB_File2, None, db.DB_BTREE, db.DB_DIRTY_READ)
+
+    curs2 = database2.cursor()  
+    key_list = []
+    result = curs2.set_range(lower.encode("utf-8")) 
+   
+    if(result != None):
+        while(result != None):
+            if(str(result[0].decode("utf-8")[0:len(upper)])>=upper): 
+                break
+            #print(result[1].decode("utf-8"))
+            key_list.append(result[1].decode("utf-8"))
+            result = curs2.next() 
+    return key_list
+
+
+def LesserRangeYearSearch(limit):
     database2 = db.DB()
     database2.set_flags(db.DB_DUP)
     DB_File2 = "ye.idx"
