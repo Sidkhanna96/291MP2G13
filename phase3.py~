@@ -3,26 +3,10 @@ import re
 import shlex
 
 def main():
-    flag_print = 0
-    while(True):
     query = input("Enter your query: ")
+    ProcessQuery(query)
 
-    for char in query:
-        # print(char)
-        if(char == "="):
-            result = query.split("=")
-            if(result[1].lower() =='key'):
-                query = input("Enter your query: ")
-                flag_print = 0
-                break
-            elif(result[1].lower() == 'full'):
-                query = input("Enter your query: ")
-                flag_print = 1
-                break
-                
-    ProcessQuery(query,flag_print)
-
-def ProcessQuery(query,flag_print):
+def ProcessQuery(query):
     database1 = db.DB()
     database2 = db.DB()
     database3 = db.DB()
@@ -73,11 +57,8 @@ def ProcessQuery(query,flag_print):
             small_list.append(char)
             key_value_list.append(small_list)
         char_bool=False
-
-    # print(key_value_list)
-    
-    key_phrases=[]
-    
+    print(key_value_list)
+	 key_phrases=[]
     for query_pair in key_value_list:
         key_words=query_pair[1].split()
         if(len(key_words)>1): #Range is a Phrase, store phrase and assess search
@@ -107,32 +88,25 @@ def ProcessQuery(query,flag_print):
 	 # Get intersect of results
     key_set = set.intersection(*map(set,key_result_list))
     final_key_list=[]
-
     for i in key_set:
         final_key_list.append(i)
-
-    # Check if phrase is assessed and matches
-    for key_val in final_key_list:
-        #Assess the titles of each key to see if the phrase is in there
-        result=curs3.set(key_val.encode("utf-8"))
-        if(result!=None):
-            for phrase in key_phrases:	#Check if all phrases are inside the title, if not then remove key from list
-                if phrase not in result[1].decode("utf-8").lower():
-                    final_key_list.remove(key_val)
-
-    
-    for i in final_key_list:
-        if(flag_print == 0):
-            print(i)
-        elif(flag_print == 1):
-            result = i.encode("utf-8")
-            result2 = curs3.set(result)
-            print(result2[1].decode("utf-8"))
-
-
-    database1.close()
-    database2.close()
-    database3.close()	 
+	 # Check if phrase is assessed and matches
+	 
+	 for key_val in final_key_list:
+		  #Assess the titles of each key to see if the phrase is in there			 	  
+		  result=curs3.set(key_val.encode("utf-8"))
+		  print(result)
+		  if(result!=None):
+	 	  		for phrase in key_phrases:	#Check if all phrases are inside the title
+	 	  			if phrase not in result[1].decode("utf-8"):
+	 	  				final_key_list.remove(key_val)
+	 	  		
+	 for i in final_key_list:
+	 	print(i)	  		
+	 
+	 database1.close()
+	 database2.close()
+	 database3.close()	 
 
 
 

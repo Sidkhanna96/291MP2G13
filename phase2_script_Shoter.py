@@ -28,6 +28,8 @@ def CreateIndex(sorted_filename):
 		# Code to create Hash index for recs.txt
 		# first create new files for removing Backslash
 		noBackSlashFile = "noBack" + sorted_filename
+		out = open(noBackSlashFile, "w")
+		out.close()
 		command = "perl break.pl" + " <" + sorted_filename + "> " + noBackSlashFile
 		print(command)
 		os.system(command)
