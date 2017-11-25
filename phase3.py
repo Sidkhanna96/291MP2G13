@@ -4,7 +4,6 @@ import shlex
 
 def main():
     flag_print = 0
-    while(True):
     query = input("Enter your query: ")
 
     for char in query:
@@ -19,7 +18,7 @@ def main():
                 query = input("Enter your query: ")
                 flag_print = 1
                 break
-                
+
     ProcessQuery(query,flag_print)
 
 def ProcessQuery(query,flag_print):
