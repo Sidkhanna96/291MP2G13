@@ -31,7 +31,7 @@ def ProcessQuery(query):
     key_result_list = []
     # query_vals = re.split(r'[^0-9a-zA-Z_]',query)
     key_value_list=[]
-    split_char_list=[":","<",">"]
+    split_char_list=[":","<",">","="]
     char_bool=False
     split_query=shlex.split(query)
     #print(split_query)
@@ -75,14 +75,21 @@ def ProcessQuery(query):
             
                 elif(query_pair[0]=='year'): 
                     if(query_pair[2]=="<"):
-                        pass
+                        key_result_list.append(LesserRangeYearSearch(word))
                     elif(query_pair[2]==">"):
-                        pass
+                        key_result_list.append(GreaterRangeYearSearch(word))
                     else:
                         key_result_list.append(YearSearch(word,curs2))
                 
                 elif(query_pair[0]=='tao'):
                     key_result_list.append(BlanketSearch(word,curs1))
+
+                elif(query_pair[0]=='output'):
+                	if(query_pair[1]=="full"):
+
+                	else:
+                		break
+                		
 
 # Get intersect of results
     key_set = set.intersection(*map(set,key_result_list))
@@ -169,11 +176,11 @@ def GreaterRangeYearSearch(limit):
 
     curs2 = database2.cursor()  
     key_list = []
-    result = curs2.set_range(lower.encode("utf-8")) 
+    result = curs2.set_range(limit.encode("utf-8")) 
    
     if(result != None):
         while(result != None):
-            if(str(result[0].decode("utf-8")[0:len(upper)])>=upper): 
+            if(str(result[0].decode("utf-8")[0:len(limit)])>=limit): 
                 break
             #print(result[1].decode("utf-8"))
             key_list.append(result[1].decode("utf-8"))
@@ -189,11 +196,11 @@ def LesserRangeYearSearch(limit):
 
     curs2 = database2.cursor()  
     key_list = []
-    result = curs2.set_range(lower.encode("utf-8")) 
+    result = curs2.set_range(limit.encode("utf-8")) 
    
     if(result != None):
         while(result != None):
-            if(str(result[0].decode("utf-8")[0:len(upper)])>=upper): 
+            if(str(result[0].decode("utf-8")[0:len(limit)])>=limit): 
                 break
             #print(result[1].decode("utf-8"))
             key_list.append(result[1].decode("utf-8"))
