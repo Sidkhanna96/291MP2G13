@@ -28,12 +28,13 @@ def ProcessQuery(query):
     term_type = ""
     value = ""
     key_result_list = []
-    # query_vals = re.split(r'[^0-9a-zA-Z_]',query)
     key_value_list=[]
     split_char_list=[":","<",">"]
     char_bool=False
-    split_query=shlex.split(query)
-    #print(split_query)
+    
+	 # Split input into separate commands
+    split_query=shlex.split(query) 
+ 
     for aquery in split_query:
         for char in aquery:
             if(char in split_char_list):
@@ -57,10 +58,11 @@ def ProcessQuery(query):
             key_value_list.append(small_list)
         char_bool=False
     print(key_value_list)
-           
+	 key_phrases=[]
     for query_pair in key_value_list:
-
         key_words=query_pair[1].split()
+        if(len(key_words)>1): #Range is a Phrase, store phrase and assess search
+        		key_phrases.append(query_pair[1])	
         for word in key_words:
             if(len(word) > 2):
                 if(query_pair[0] == 'title'):
@@ -82,11 +84,30 @@ def ProcessQuery(query):
                 
                 elif(query_pair[0]=='tao'):
                     key_result_list.append(BlanketSearch(word,curs1))
-
-# Get intersect of results
+								
+	 # Get intersect of results
     key_set = set.intersection(*map(set,key_result_list))
+    final_key_list=[]
     for i in key_set:
-        print(i)
+        final_key_list.append(i)
+	 # Check if phrase is assessed and matches
+	 
+	 for key_val in final_key_list:
+		  #Assess the titles of each key to see if the phrase is in there			 	  
+		  result=curs3.set(key_val.encode("utf-8"))
+		  print(result)
+		  if(result!=None):
+	 	  		for phrase in key_phrases:	#Check if all phrases are inside the title, if not then remove key from list
+	 	  			if phrase not in result[1].decode("utf-8"):
+	 	  				final_key_list.remove(key_val)
+	 	  		
+	 for i in final_key_list:
+	 	print(i)	  		
+	 
+	 database1.close()
+	 database2.close()
+	 database3.close()	 
+
 
 
 
