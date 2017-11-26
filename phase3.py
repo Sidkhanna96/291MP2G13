@@ -11,7 +11,7 @@ def main():
 
     #if the user Enters output it will ask for the query again until a proper query is entered
     #it will also set the flag to print accordingly
-    while(char in query):
+    while(char in query and " " not in query):
         result = query.split("=")
         #checking if need to print record or just the key
         if(result[1].lower() =='key'):
@@ -21,6 +21,9 @@ def main():
         elif(result[1].lower() == 'full'):
             flag_print = 1
             query = input("Enter your query: ")
+        else:
+        	print("Not correct State")
+        	query = input("Enter your query: ")
                 
     #processing the query to get the values to print
     ProcessQuery(query,flag_print)
@@ -52,7 +55,7 @@ def ProcessQuery(query,flag_print):
     value = ""
     key_result_list = []
     key_value_list=[]
-    split_char_list=[":","<",">"]
+    split_char_list=[":","<",">","="]
     char_bool=False
     
 	# Split input into separate commands
@@ -108,7 +111,11 @@ def ProcessQuery(query,flag_print):
                         key_result_list.append(RangeYearSearch(curs2,word,'999999'))
                     else:
                         key_result_list.append(YearSearch(word,curs2))
-                
+                elif(query_pair[0]=='output'):
+                	if(query_pair[1].lower() == "full"):
+                		flag_print = 1
+                	elif(query_pair[1].lower() == "key"):
+                		flag_print = 0
                 elif(query_pair[0]=='tao'):
                     key_result_list.append(BlanketSearch(word,curs1))
 								
