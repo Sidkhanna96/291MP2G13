@@ -14,57 +14,31 @@ def main():
 
 	try:
 		# (1) a hash index on recs.txt with record key as keys and the full record as data.
-		CreateRecsIndex('s_recs.txt')
+		CreateIndex('s_recs.txt')
 		# (2) a B+-tree index on terms.txt with terms as keys and record key as data.
-		CreateTermsIndex('s_terms.txt')
+		CreateIndex('s_terms.txt')
 		# (3) a B+-tree index on years.txt with years as keys and record key as data.
-		CreateYearsIndex('s_years.txt')
+		CreateIndex('s_years.txt')
 	except:
 		print("Could not create index files.")
 	return
 
-def CreateRecsIndex(sorted_filename):
+def CreateIndex(sorted_filename):
 	try:
 		# Code to create Hash index for recs.txt
-		#first create new files for removing Backslash
+		# first create new files for removing Backslash
 		noBackSlashFile = "noBack" + sorted_filename
+		out = open(noBackSlashFile, "w")
+		out.close()
 		command = "perl break.pl" + " <" + sorted_filename + "> " + noBackSlashFile
 		print(command)
 		os.system(command)
-
-		commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t hash re.idx"
-		print(commandForIdx)
-		os.system(commandForIdx)
-	except:
-		print("Could not create File with no Backslash or Index file could not be created.")
-
-	return
-
-
-def CreateTermsIndex(sorted_filename):
-	try:
-		# Code to create B+-Tree index for terms.txt
-		noBackSlashFile = "noBack" + sorted_filename
-		command = "perl break.pl" + " <" + sorted_filename + "> " + noBackSlashFile
-		print(command)
-		os.system(command)
-
-		commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t btree te.idx"
-		print(commandForIdx)
-		os.system(commandForIdx)
-	except:
-		print("Could not create File with no Backslash or Index file could not be created.")
-	return
-
-def CreateYearsIndex(sorted_filename):
-	try:
-		# Code to create B+-Tree index for years.txt
-		noBackSlashFile = "noBack" + sorted_filename
-		command = "perl break.pl" + " <" + sorted_filename + "> " + noBackSlashFile
-		print(command)
-		os.system(command)
-
-		commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t btree ye.idx"
+		IndexFilename = sorted_filename[2:3] + "e.idx"
+		print(IndexFilename)
+		if sorted_filename[2:3] == 'r':
+			commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t hash " + IndexFilename
+		else:
+			commandForIdx = "< " + noBackSlashFile + " db_load -T -c duplicates=1 -t btree " + IndexFilename
 		print(commandForIdx)
 		os.system(commandForIdx)
 	except:

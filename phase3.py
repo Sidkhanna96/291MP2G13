@@ -2,26 +2,32 @@ from bsddb3 import db
 import re
 import shlex
 
+#Getting the input from the user for the query
 def main():
     flag_print = 0
     query = input("Enter your query: ")
 
-    for char in query:
-        # print(char)
-        if(char == "="):
-            result = query.split("=")
-            if(result[1].lower() =='key'):
-                query = input("Enter your query: ")
-                flag_print = 0
-                break
-            elif(result[1].lower() == 'full'):
-                query = input("Enter your query: ")
-                flag_print = 1
-                break
+    char = "output"
 
+    #if the user Enters output it will ask for the query again until a proper query is entered
+    #it will also set the flag to print accordingly
+    while(char in query):
+        result = query.split("=")
+        #checking if need to print record or just the key
+        if(result[1].lower() =='key'):
+            flag_print = 0
+            query = input("Enter your query: ")
+            
+        elif(result[1].lower() == 'full'):
+            flag_print = 1
+            query = input("Enter your query: ")
+                
+    #processing the query to get the values to print
     ProcessQuery(query,flag_print)
 
 def ProcessQuery(query,flag_print):
+    #opening the idx databases
+
     database1 = db.DB()
     database2 = db.DB()
     database3 = db.DB()
@@ -36,10 +42,12 @@ def ProcessQuery(query,flag_print):
     database2.open(DB_File2, None, db.DB_BTREE, db.DB_DIRTY_READ)
     database3.open(DB_File3, None, db.DB_HASH, db.DB_DIRTY_READ)
     
+    #creating cursor for the each idx database file
     curs1 = database1.cursor()  
     curs2 = database2.cursor()  
     curs3 = database3.cursor()  
 
+    #declaring variables
     term_type = ""
     value = ""
     key_result_list = []
@@ -47,9 +55,10 @@ def ProcessQuery(query,flag_print):
     split_char_list=[":","<",">"]
     char_bool=False
     
-	 # Split input into separate commands
+	# Split input into separate commands
     split_query=shlex.split(query) 
  
+    #checking the input for the type of query entered
     for aquery in split_query:
         for char in aquery:
             if(char in split_char_list):
@@ -119,14 +128,16 @@ def ProcessQuery(query,flag_print):
                 if phrase not in result[1].decode("utf-8").lower():
                     final_key_list.remove(key_val)
 
-    
-    for i in final_key_list:
-        if(flag_print == 0):
-            print(i)
-        elif(flag_print == 1):
-            result = i.encode("utf-8")
-            result2 = curs3.set(result)
-            print(result2[1].decode("utf-8"))
+    if(len(final_key_list) != 0):
+        for i in final_key_list:
+            if(flag_print == 0):
+                print(i)
+            elif(flag_print == 1):
+                result = i.encode("utf-8")
+                result2 = curs3.set(result)
+                print(result2[1].decode("utf-8"))
+    else:
+        print("Invalid")
 
 
     database1.close()
@@ -211,15 +222,18 @@ def TitleSearch(value, curs1):
 
 def RangeYearSearch(curs2, lower, upper):
     key_list = []
-    result = curs2.set_range(lower.encode("utf-8")) 
+    result = curs2.set_range(lower.encode("utf-8"))
    
     if(result != None):
         while(result != None):
             if(str(result[0].decode("utf-8")[0:len(upper)])>=upper): 
                 break
             #print(result[1].decode("utf-8"))
-            key_list.append(result[1].decode("utf-8"))
-            result = curs2.next() 
+            elif(str(result[0].decode("utf-8")[0:len(upper)])<=lower):
+                result = curs2.next()
+            else:
+                key_list.append(result[1].decode("utf-8"))
+                result = curs2.next() 
     return key_list
 
 
