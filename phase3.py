@@ -140,15 +140,23 @@ def ProcessQuery(query,flag_print):
     for i in key_set:
         final_key_list.append(i)
 
+
     final_key_list2 = copy.deepcopy(final_key_list)
-    # print(final_key_list2)
+    
     # Check if phrase is assessed and matches
     for key_val in final_key_list2:
         #Assess the titles of each key to see if the phrase is in there
         result=curs3.set(key_val.encode("utf-8"))
         if(result!=None):
-            for phrase in key_phrases:	#Check if all phrases are inside the title, if not then remove key from list
-                if phrase not in result[1].decode("utf-8").lower():
+            # print(key_phrases)
+            #Check if all phrases are inside the title, if not then remove key from list
+            for phrase in key_phrases:	
+            #     if phrase not in result[1].decode("utf-8").lower():
+            #         final_key_list.remove(key_val)
+                result = re.findall('\\b' + phrase + '\\b', result[1].decode("utf-8").lower(), flags = re.IGNORECASE)
+                if len(result)>0:
+                    continue
+                else:
                     final_key_list.remove(key_val)
 
     if(len(final_key_list) != 0):
