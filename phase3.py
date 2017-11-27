@@ -31,6 +31,7 @@ def ProcessQuery(query):
     key_value_list=[]
     split_char_list=[":","<",">"]
     char_bool=False
+    if(len(query)>2):
     split_query=query.split()
     for aquery in split_query:
         for char in aquery:
