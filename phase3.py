@@ -124,11 +124,11 @@ def ProcessQuery(query,flag_print):
                         key_result_list.append(RangeYearSearch(curs2,word,'999999'))
                     else:
                         key_result_list.append(YearSearch(word,curs2))
-                elif(query_pair[0]=='output'):
-                	if(query_pair[1].lower() == "full"):
-                		flag_print = 1
-                	elif(query_pair[1].lower() == "key"):
-                		flag_print = 0
+               # elif(query_pair[0]=='output'):
+               # 	if(query_pair[1].lower() == "full"):
+               # 		flag_print = 1
+               # 	elif(query_pair[1].lower() == "key"):
+               # 		flag_print = 0
                 elif(query_pair[0]=='tao'):
                     key_result_list.append(BlanketSearch(word,curs1))
 								
