@@ -5,28 +5,36 @@ import shlex
 #Getting the input from the user for the query
 def main():
     flag_print = 0
-    query = input("Enter your query: ")
+    quit_flag = True
+    print("Enter q to exit")
+    while(quit_flag):
+        query = input("Enter your query: ")
+        char = "output"
 
-    char = "output"
-
-    #if the user Enters output it will ask for the query again until a proper query is entered
-    #it will also set the flag to print accordingly
-    while(char in query and " " not in query):
-        result = query.split("=")
-        #checking if need to print record or just the key
-        if(result[1].lower() =='key'):
-            flag_print = 0
-            query = input("Enter your query: ")
-            
-        elif(result[1].lower() == 'full'):
-            flag_print = 1
-            query = input("Enter your query: ")
-        else:
-        	print("Not correct State")
-        	query = input("Enter your query: ")
+        #if the user Enters output it will ask for the query again until a proper query is entered
+        #it will also set the flag to print accordingly
+        while(char in query and " " not in query):
+            result = query.split("=")
+            #checking if need to print record or just the key
+            if(result[1].lower() =='key'):
+                flag_print = 0
+                query = input("Enter your query: ")
                 
-    # processing the query to get the values to print
-    ProcessQuery(query,flag_print)
+            elif(result[1].lower() == 'full'):
+                flag_print = 1
+                query = input("Enter your query: ")
+            else:
+            	print("Not correct State")
+            	query = input("Enter your query: ")
+                    
+        if(len(query)==0):
+            print("No query was entered")
+        elif(query=="q"):
+            quit_flag = False
+        else:    
+            # processing the query to get the values to print
+            ProcessQuery(query,flag_print)
+
 
 def ProcessQuery(query,flag_print):
     #opening the idx databases
@@ -85,7 +93,7 @@ def ProcessQuery(query,flag_print):
             key_value_list.append(small_list)
         char_bool=False
 
-    # print(key_value_list)
+    # print(len(key_value_list))
     for quer in key_value_list:
         if("" in quer and len(quer)<=3):
             print("Must have key-value pair")
