@@ -1,6 +1,7 @@
 from bsddb3 import db
 import re
 import shlex
+import copy
 
 #Getting the input from the user for the query
 def main():
@@ -68,7 +69,7 @@ def ProcessQuery(query,flag_print):
     
 	# Split input into separate commands
     split_query=shlex.split(query) 
- 
+    # print(split_query)
     #checking the input for the type of query entered
     for aquery in split_query:
         for char in aquery:
@@ -139,8 +140,10 @@ def ProcessQuery(query,flag_print):
     for i in key_set:
         final_key_list.append(i)
 
+    final_key_list2 = copy.deepcopy(final_key_list)
+    # print(final_key_list2)
     # Check if phrase is assessed and matches
-    for key_val in final_key_list:
+    for key_val in final_key_list2:
         #Assess the titles of each key to see if the phrase is in there
         result=curs3.set(key_val.encode("utf-8"))
         if(result!=None):
