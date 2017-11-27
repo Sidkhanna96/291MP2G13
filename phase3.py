@@ -25,7 +25,7 @@ def main():
         	print("Not correct State")
         	query = input("Enter your query: ")
                 
-    #processing the query to get the values to print
+    # processing the query to get the values to print
     ProcessQuery(query,flag_print)
 
 def ProcessQuery(query,flag_print):
@@ -86,7 +86,11 @@ def ProcessQuery(query,flag_print):
         char_bool=False
 
     # print(key_value_list)
-    
+    for quer in key_value_list:
+        if("" in quer and len(quer)<=3):
+            print("Must have key-value pair")
+            return
+
     key_phrases=[]
     
     for query_pair in key_value_list:
@@ -120,6 +124,7 @@ def ProcessQuery(query,flag_print):
                     key_result_list.append(BlanketSearch(word,curs1))
 								
 	 # Get intersect of results
+
     key_set = set.intersection(*map(set,key_result_list))
     final_key_list=[]
 
